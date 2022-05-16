@@ -11,6 +11,7 @@ import { PanelBody, RangeControl, TabPanel } from '@wordpress/components';
 import { useState, useEffect } from 'react';
 
 import { getDeviceSuffix } from '../../utils/get-device-type';
+import { renderGlobalStyle } from '../../utils/global-style';
 
 import WoostifyBaseControl from '../../components/controls/base';
 import WoostifyDimensionsControl from '../../components/controls/dimensions';
@@ -31,6 +32,8 @@ function Edit(props) {
 		setAttributes({
 			uniqueId: clientId.substr(2, 9).replace('-', ''),
 		});
+
+		renderGlobalStyle();
 	}, []);
 
 	let lineHeightCSS =

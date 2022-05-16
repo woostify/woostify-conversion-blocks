@@ -4,14 +4,11 @@
   "description": "Advanced blocks for Block editor",
   "main": "dist/blocks.js",
   "scripts": {
-    "build": "wp-scripts build",
-    "build:new": "wp-scripts build src/blocks.js src/sidebar.js --output-path=dist",
+    "build": "wp-scripts build src/blocks.js src/sidebar.js --output-path=dist",
     "format": "wp-scripts format",
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",
-    "start": "wp-scripts start",
-    "start:new": "wp-scripts start src/blocks.js src/sidebar.js --output-path=dist",
-    "start:hot": "wp-scripts start --hot",
+    "start": "wp-scripts start src/blocks.js src/sidebar.js --output-path=dist",
     "packages-update": "wp-scripts packages-update"
   },
   "author": "Woostify",

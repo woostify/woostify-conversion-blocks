@@ -102,9 +102,9 @@ if ( ! class_exists( 'WCB' ) ) {
 				return;
 			}
 
-			load_plugin_textdomain( 'wcb', false, WCB_PATH . 'languages/' );
-
 			wp_set_script_translations( 'wcb-blocks-scripts', 'wcb', WCB_PATH . 'languages/' );
+
+			load_plugin_textdomain( 'wcb', false, WCB_PATH . 'languages/' );
 		}
 
 		/**
@@ -202,12 +202,17 @@ if ( ! class_exists( 'WCB' ) ) {
 				true
 			);
 
+			$breakpoints = array(
+				'tablet' => get_option( 'wcb_settings_tablet_breakpoint', '1024' ),
+				'mobile' => get_option( 'wcb_settings_mobile_breakpoint', '768' ),
+			);
 			wp_localize_script(
 				'wcb-blocks-scripts',
 				'wcb_params',
 				array(
 					'global_colors'     => get_option( 'wcb_global_colors', '' ),
 					'global_typography' => get_option( 'wcb_global_typography', '' ),
+					'breakpoints'       => $breakpoints,
 				),
 			);
 

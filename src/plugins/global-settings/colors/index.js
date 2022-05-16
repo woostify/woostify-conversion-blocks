@@ -11,7 +11,6 @@ import {
 	Popover,
 	BaseControl,
 	Button,
-	ButtonGroup,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -99,7 +98,9 @@ const WCBGlobalColors = (props) => {
 			});
 			settings.save();
 
-			renderGlobalStyle();
+			setTimeout(() => {
+				renderGlobalStyle();
+			}, 300);
 		}, 300);
 
 		// Update our store.

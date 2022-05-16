@@ -45,8 +45,7 @@ const WCBGlobalColorPaletteUpdater = () => {
 		JSON.stringify(wcbColors),
 		isInitializing,
 	]);
-
-	// We don't want to render anything here.
+	
 	return null;
 };
 

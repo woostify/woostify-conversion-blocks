@@ -59,7 +59,9 @@ const WoostifyBlockSidebarContent = (props) => {
 			});
 			model.save();
 
-			renderGlobalStyle();
+			setTimeout(() => {
+				renderGlobalStyle();
+			}, 300);
 		}, 500);
 	};
 

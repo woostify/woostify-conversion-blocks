@@ -23,6 +23,18 @@ export const getDocumentHead = () => {
 	return head;
 };
 
+export const getDocumentBody = () => {
+	let body = document.querySelector('body');
+
+	if (isEditingContent()) {
+		body = document
+			.querySelector('iframe[name="editor-canvas"]')
+			.contentWindow.document.querySelector('body');
+	}
+
+	return body;
+};
+
 export const isEditingContent = () =>
 	!!document.querySelector('iframe[name="editor-canvas"]');
 
@@ -34,11 +46,11 @@ export const isEditingPost = () => {
 	return false;
 }
 
-export const JSToCSS = (JS) => {
+export const JSToCSS = (attrs, originAttrs) => {
 	let cssString = '';
-	for (let objectKey in JS) {
+	for (let objectKey in attrs) {
 		if (objectKey.includes('Unit')) {
-			return;
+			continue;
 		}
 		let suffix = '';
 		if (objectKey.includes('fontFamily')) {
@@ -47,11 +59,24 @@ export const JSToCSS = (JS) => {
 		if (objectKey.includes('letterSpacing')) {
 			suffix = 'px';
 		}
-		cssString += objectKey.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`) +
+		if (objectKey.includes('fontSize') || objectKey.includes('lineHeight')) {
+			suffix = 'px';
+			let realObjectKey = objectKey.replace(/Mobile|Tablet/g,'')
+			if ( objectKey.includes('Tablet') && originAttrs[realObjectKey + 'UnitTablet'] ) {
+				suffix = originAttrs[realObjectKey + 'UnitTablet'];
+			}
+			if ( objectKey.includes('Tablet') && originAttrs[realObjectKey + 'UnitTablet'] ) {
+				suffix = originAttrs[realObjectKey + 'UnitTablet'];
+			}
+			if ( ! objectKey.includes('Tablet') && ! objectKey.includes('Mobile') && originAttrs[objectKey + 'Unit'] ) {
+				suffix = originAttrs[objectKey + 'Unit'];
+			}
+		}
+		let cssSelector = objectKey.replace(/Mobile|Tablet/g,'');
+		cssString += cssSelector.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`) +
 		': ' +
-		JS[objectKey] +
-		suffix +
-		';\n';
+		originAttrs[objectKey] +
+		suffix + ';';
 	}
 
 	return cssString;
