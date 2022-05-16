@@ -35,7 +35,7 @@ let _pot = (done) => {
 		.pipe(
 			wpPot({
 				domain: domain,
-				package: 'Woostify Conversion Block',
+				package: 'Woostify Conversion Blocks',
 			})
 		)
 		.on('error', handleError)
@@ -68,7 +68,7 @@ let _zip = (done) => {
 		'!bundled/**',
 	])
 		/*.pipe( debug( { title: 'src' } ) )*/
-		.pipe(zip('woostify-conversion-block-' + pkgInfo.version + '.zip'))
+		.pipe(zip('woostify-conversion-blocks-' + pkgInfo.version + '.zip'))
 		.pipe(gulp.dest('bundled'));
 
 	done();

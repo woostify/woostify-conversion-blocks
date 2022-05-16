@@ -1,8 +1,8 @@
 <?php
 /**
- * Main Woostify Conversion Block Gloval Settings Class
+ * Main Woostify Conversion Blocks Global Settings Class
  *
- * @package  Woostify Conversion Block
+ * @package  Woostify Conversion Blocks
  */
 
 defined( 'ABSPATH' ) || exit;

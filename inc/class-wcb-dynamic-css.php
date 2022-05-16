@@ -2,7 +2,7 @@
 /**
  * Main Dynamic Css Class
  *
- * @package Woostify Conversion Block
+ * @package Woostify Conversion Blocks
  */
 
 defined( 'ABSPATH' ) || exit;

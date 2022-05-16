@@ -88,7 +88,7 @@ a:focus {
 }
 
 /* Remove padding-left on options page */
-body[class*="toplevel_page_wcb"] #wpcontent, body[class*="woostify-conversion-block_page"] #wpcontent {
+body[class*="toplevel_page_wcb"] #wpcontent, body[class*="woostify-conversion-blocks_page"] #wpcontent {
   padding: 0;
 }
 

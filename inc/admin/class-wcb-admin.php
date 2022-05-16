@@ -1,8 +1,8 @@
 <?php
 /**
- * Woostify Conversion Block Admin Class
+ * Woostify Conversion Blocks Admin Class
  *
- * @package  Woostify Conversion Block
+ * @package  Woostify Conversion Blocks
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'WCB_Admin' ) ) :
 	/**
-	 * Woostify Conversion Block Admin class
+	 * Woostify Conversion Blocks Admin class
 	 */
 	class WCB_Admin {
 		/**
@@ -134,11 +134,11 @@ if ( ! class_exists( 'WCB_Admin' ) ) :
 				return;
 			}
 
-			add_menu_page( 'Woostify Conversion Block Dashboard', 'Woostify Conversion Block', 'manage_options', 'wcb', array( $this, 'dashboard_screen' ), '', 60 );
+			add_menu_page( 'Woostify Conversion Blocks Dashboard', 'Woostify Conversion Blocks', 'manage_options', 'wcb', array( $this, 'dashboard_screen' ), '', 60 );
 			// Menu Dashboard.
-			add_submenu_page( 'wcb', 'Woostify Conversion Block Dashboard', 'Dashboard', 'manage_options', 'wcb' );
+			add_submenu_page( 'wcb', 'Woostify Conversion Blocks Dashboard', 'Dashboard', 'manage_options', 'wcb' );
 			// Menu Settings.
-			add_submenu_page( 'wcb', 'Woostify Conversion Block Settings', 'Settings', 'manage_options', 'wcb-settings', array( $this, 'settings_screen' ) );
+			add_submenu_page( 'wcb', 'Woostify Conversion Blocks Settings', 'Settings', 'manage_options', 'wcb-settings', array( $this, 'settings_screen' ) );
 		}
 
 		/**

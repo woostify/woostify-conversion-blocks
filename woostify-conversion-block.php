@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Woostify Conversion Block
+ * Plugin Name:       Woostify Conversion Blocks
  * Description:       Advanced blocks for Gutenberg editor.
  * Requires at least: 5.8
  * Requires PHP:      7.0
@@ -10,7 +10,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wcb
  *
- * @package           Woostify Conversion Block
+ * @package           Woostify Conversion Blocks
  */
 
 defined( 'ABSPATH' ) || exit;

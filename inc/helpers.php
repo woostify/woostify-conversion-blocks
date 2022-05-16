@@ -2,16 +2,16 @@
 /**
  * Woostify block helper functions.
  *
- * @package Woostify Conversion Block
+ * @package Woostify Conversion Blocks
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! function_exists( 'wcb_version' ) ) {
 	/**
-	 * Woostify conversion block Version
+	 * Woostify Conversion Blocks Version
 	 *
-	 * @return string Woostify Conversion Block Version.
+	 * @return string Woostify Conversion Blocks Version.
 	 */
 	function wcb_version() {
 		return esc_attr( WCB_VERSION );

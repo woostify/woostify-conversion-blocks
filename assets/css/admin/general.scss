@@ -93,7 +93,7 @@ a {
 /* Remove padding-left on options page */
 body{
 	&[class*="toplevel_page_wcb"],
-	&[class*="woostify-conversion-block_page"] {
+	&[class*="woostify-conversion-blocks_page"] {
 		#wpcontent {
 			padding: 0;
 		}

@@ -1,15 +1,15 @@
 <?php
 /**
- * Main Woostify Conversion Block Class
+ * Main Woostify Conversion Blocks Class
  *
- * @package  Woostify Conversion Block
+ * @package  Woostify Conversion Blocks
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'WCB' ) ) {
 	/**
-	 * Woostify Conversion Block class
+	 * Woostify Conversion Blocks class
 	 */
 	class WCB {
 		/**

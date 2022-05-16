@@ -1,7 +1,7 @@
 /**
  * Edit Screen
  *
- * @package Woostify Conversion Block
+ * @package Woostify Conversion Blocks
  */
 
 /* global ajaxurl, wcb_edit_screen */
