@@ -35,23 +35,129 @@ if ( ! class_exists( 'WCB_Global_Settings' ) ) {
 		public function __construct() {
 			// Register settings.
 			add_action( 'init', array( $this, 'register_settings' ) );
+		}
 
-			if ( ! is_admin() ) {
-				add_filter( 'wcb_post_dynamic_css', array( $this, 'color_add_global_styles' ) );
+		/**
+		 * Generate CSS from attribute array
+		 *
+		 * @param array $attrs current breakpoint selector attributes.
+		 * @param array $ori_attrs current selector attributes.
+		 * @return string
+		 */
+		public function generate_css( $attrs = array(), $ori_attrs = array() ) {
+			$css_string = '';
+			if ( empty( $attrs ) ) {
+				return '';
 			}
+
+			foreach ( $attrs as $key => $attr ) {
+				$attr_name = $key;
+				$suffix    = '';
+				if ( str_contains( $attr_name, 'Unit' ) ) {
+					continue;
+				}
+				if ( str_contains( $attr_name, 'fontFamily' ) ) {
+					$suffix = ', Sans-serif';
+				}
+				if ( str_contains( $attr_name, 'letterSpacing' ) ) {
+					$suffix = 'px';
+				}
+				if ( str_contains( $attr_name, 'fontSize' ) || str_contains( $attr_name, 'lineHeight' ) ) {
+					$suffix         = 'px';
+					$real_attr_name = str_replace( array( 'Mobile', 'Tablet' ), '', $attr_name );
+					if ( str_contains( $attr_name, 'Tablet' ) && isset( $ori_attrs[ $real_attr_name . 'UnitTablet' ] ) ) {
+						$suffix = $ori_attrs[ $real_attr_name . 'UnitTablet' ];
+					}
+					if ( str_contains( $attr_name, 'Mobile' ) && isset( $ori_attrs[ $real_attr_name . 'UnitMobile' ] ) ) {
+						$suffix = $ori_attrs[ $real_attr_name . 'UnitMobile' ];
+					}
+					if ( ! str_contains( $attr_name, 'Tablet' ) && ! str_contains( $attr_name, 'Mobile' ) && isset( $ori_attrs[ $real_attr_name . 'Unit' ] ) ) {
+						$suffix = $ori_attrs[ $real_attr_name . 'Unit' ];
+					}
+				}
+				$real_attr_name = str_replace( array( 'Mobile', 'Tablet' ), '', $attr_name );
+				$new_attr_name  = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $real_attr_name ) );
+				$css_string    .= $new_attr_name . ': ' . $ori_attrs[ $attr_name ] . $suffix . ';';
+			}
+
+			return $css_string;
+		}
+
+		/**
+		 * Add our global typography styles in the frontend.
+		 *
+		 * @return string
+		 */
+		public function typography_add_global_styles() {
+			$css         = array();
+			$current_css = '';
+
+			$typos = get_option( 'wcb_global_typography', '' );
+			if ( ! $typos || ! is_array( $typos ) ) {
+				return '';
+			}
+
+			$typos = $typos[0];
+
+			$typo_css        = array();
+			$typo_css_tablet = array();
+			$typo_css_mobile = array();
+			$typo_css_prefix = '.wcb-block-wrapper ';
+			foreach ( $typos as $selector => $typo ) {
+				$attrs             = $typo;
+				$typo_css_selector = $typo_css_prefix . $selector . ' {';
+				$typo_attrs        = array();
+				$typo_attrs_tablet = array();
+				$typo_attrs_mobile = array();
+				foreach ( $attrs as $attr_name => $attr_value ) {
+					if ( ! str_contains( $attr_name, 'Tablet' ) && ! str_contains( $attr_name, 'Mobile' ) ) {
+						$typo_attrs[ $attr_name ] = $attr_value;
+					}
+					if ( str_contains( $attr_name, 'Tablet' ) ) {
+						$typo_attrs_tablet[ $attr_name ] = $attr_value;
+					}
+					if ( str_contains( $attr_name, 'Mobile' ) ) {
+						$typo_attrs_mobile[ $attr_name ] = $attr_value;
+					}
+				}
+
+				array_push( $typo_css, $typo_css_selector . $this->generate_css( $typo_attrs, $attrs ) . '}' );
+				array_push( $typo_css_tablet, $typo_css_selector . $this->generate_css( $typo_attrs_tablet, $attrs ) . '}' );
+				array_push( $typo_css_mobile, $typo_css_selector . $this->generate_css( $typo_attrs_mobile, $attrs ) . '}' );
+			}
+
+			$tablet_breakpoint = get_option( 'wcb_settings_tablet_breakpoint', '1024' );
+			$mobile_breakpoint = get_option( 'wcb_settings_mobile_breakpoint', '768' );
+
+			$current_css .= "\n/* Global Typography */\n";
+			if ( count( $typo_css ) ) {
+				$current_css .= implode( ' ', $typo_css );
+			}
+			if ( count( $typo_css_tablet ) ) {
+				$current_css .= ' @media(max-width:' . $tablet_breakpoint . 'px) {';
+				$current_css .= implode( ' ', $typo_css_tablet );
+				$current_css .= '}';
+			}
+			if ( count( $typo_css_mobile ) ) {
+				$current_css .= ' @media(max-width:' . $mobile_breakpoint . 'px) {';
+				$current_css .= implode( ' ', $typo_css_mobile );
+				$current_css .= '}';
+			}
+
+			return $current_css;
 		}
 
 		/**
 		 * Add our global color styles in the frontend.
 		 *
-		 * @param String $current_css Current css content in css file.
 		 * @return String
 		 */
-		public function color_add_global_styles( $current_css ) {
+		public function color_add_global_styles() {
+			$current_css = '';
 			// Don't do anything if we doon't have any global color.
 			$colors = get_option( 'wcb_global_colors' );
 			if ( ! $colors || ! is_array( $colors ) ) {
-				return $current_css;
+				return '';
 			}
 
 			$css      = array();

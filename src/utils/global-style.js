@@ -54,7 +54,7 @@ export const convertToResponsiveStyle = (body) => {
 			for (const selector in typography) {
 				const attrs = typography[selector];
 				const typoCSSSelector = typoCSSPrefix + selector + ', .editor-styles-wrapper .wcb-block-wrapper '+selector+' {';
-				let typoAttrs = {};
+				let typoAttrs = [];
 				let typoAttrsTablet = [];
 				let typoAttrsMobile = [];
 				for (const attrName in attrs) {

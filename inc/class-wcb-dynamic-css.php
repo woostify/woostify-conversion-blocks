@@ -27,6 +27,13 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 		public $stylesheet_id;
 
 		/**
+		 * Global Stylesheet ID
+		 *
+		 * @var string
+		 */
+		public $global_stylesheet_id;
+
+		/**
 		 * Base path.
 		 *
 		 * @access protected
@@ -78,7 +85,8 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 		public function __construct() {
 			// Replace with the ID of your own stylesheet.
 			// Usually defined in your theme.
-			$this->stylesheet_id = 'wcb-front-end';
+			$this->stylesheet_id        = 'wcb-front-end';
+			$this->global_stylesheet_id = 'wcb-front-end';
 
 			$this->add_options();
 
@@ -190,16 +198,34 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 		}
 
 		/**
+		 * Get global styles
+		 *
+		 * @return string
+		 */
+		public function get_global_style() {
+			$wcb_global_settings = new WCB_Global_Settings();
+			$global_colors_style = $wcb_global_settings->color_add_global_styles();
+			$global_typo_style   = $wcb_global_settings->typography_add_global_styles();
+
+			return $global_colors_style . $global_typo_style;
+		}
+
+		/**
 		 * Enqueue the dynamic CSS.
 		 */
 		public function enqueue_dynamic_css() {
 
 			if ( 'file' === $this->mode() ) {
 				// Yay! we're using a file for our CSS, so enqueue it.
-				wp_enqueue_style( 'wcb-dynamic-post-css', $this->file( 'uri' ), array(), WCB_VERSION ); // phpcs:ignore.
+				if ( $this->make_global_css() ) {
+					wp_enqueue_style( 'wcb-global-style', $this->file( 'uri', true ), array(), WCB_VERSION );
+				}
+				wp_enqueue_style( 'wcb-dynamic-post', $this->file( 'uri' ), array(), WCB_VERSION ); // phpcs:ignore.
 				// Bah, no file mode... add inline to the head.
 			} elseif ( 'inline' === $this->mode() ) {
+				$global_style = $this->get_global_style();
 				wp_add_inline_style( $this->stylesheet_id, apply_filters( 'wcb_post_dynamic_css', '' ) );
+				wp_add_inline_style( $this->stylesheet_id, $global_style );
 			}
 
 		}
@@ -279,15 +305,67 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 		}
 
 		/**
-		 * Determines if the CSS file is writable.
+		 * Make global css file content with compiled
 		 */
-		public function can_write() {
+		public function make_global_css() {
+			$global_style = $this->get_global_style();
 
-			if ( ! $this->page_id() ) {
+			$content = "/********* Global CSS - Do not edit *********/\n" . $global_style;
+
+			// Take care of domain mapping.
+			if ( defined( 'DOMAIN_MAPPING' ) && DOMAIN_MAPPING ) {
+
+				if ( function_exists( 'domain_mapping_siteurl' ) && function_exists( 'get_original_url' ) ) {
+
+					$mapped_domain = domain_mapping_siteurl( false );
+					$mapped_domain = str_replace( 'https://', '//', $domain_mapping );
+					$mapped_domain = str_replace( 'http://', '//', $mapped_domain );
+
+					$original_domain = get_original_url( 'siteurl' );
+					$original_domain = str_replace( 'https://', '//', $original_domain );
+					$original_domain = str_replace( 'http://', '//', $original_domain );
+
+					$content = str_replace( $original_domain, $mapped_domain, $content );
+
+				}
+			}
+
+			// Strip protocols.
+			$content = str_replace( 'https://', '//', $content );
+			$content = str_replace( 'http://', '//', $content );
+
+			if ( file_exists( $this->file( 'path', true ) ) ) {
+				return true;
+			} else {
+				if ( is_writable( $this->file( 'path', true ) ) || is_writable( dirname( $this->file( 'path', true ) ) ) ) {
+
+					if ( ! $this->get_filesystem()->put_contents( $this->file( 'path', true ), $content, FS_CHMOD_FILE ) ) {
+
+						// Fail!
+						return false;
+					}
+
+					return true;
+				}
+			}
+		}
+
+		/**
+		 * Determines if the CSS file is writable.
+		 *
+		 * @param boolean $is_global Is global css file.
+		 * @return boolean
+		 */
+		public function can_write( $is_global = false ) {
+
+			if ( ! $this->page_id() && ! $is_global ) {
 				return;
 			}
 
-			$file_name   = $this->get_file_name();
+			$file_name = $this->get_file_name();
+			if ( $is_global ) {
+				$file_name = 'global.css';
+			}
 			$folder_path = $this->get_style_folder();
 
 			// Does the folder exist?
@@ -333,15 +411,20 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 		/**
 		 * Gets the css path or url to the stylesheet.
 		 *
-		 * @param string $target path/url.
+		 * @param string  $target path/url.
+		 * @param boolean $is_global is global css file.
+		 * @return void
 		 */
-		public function file( $target = 'path' ) {
+		public function file( $target = 'path', $is_global = false ) {
 
-			if ( ! $this->page_id() ) {
+			if ( ! $this->page_id() && ! $is_global ) {
 				return;
 			}
 
-			$file_name   = $this->get_file_name();
+			$file_name = $this->get_file_name();
+			if ( $is_global ) {
+				$file_name = 'global.css';
+			}
 			$folder_path = $this->get_style_folder();
 
 			// The complete path to the file.
@@ -350,7 +433,8 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 			$upload_dir     = wp_upload_dir();
 			$css_uri_folder = $upload_dir['baseurl'];
 
-			$css_uri = trailingslashit( $css_uri_folder ) . $this->subfolder_name . $file_name;
+			$css_uri        = trailingslashit( $css_uri_folder ) . $this->subfolder_name . $file_name;
+			$global_css_uri = trailingslashit( $css_uri_folder ) . $this->subfolder_name . '/global.css';
 
 			// Take care of domain mapping.
 			if ( defined( 'DOMAIN_MAPPING' ) && DOMAIN_MAPPING ) {
@@ -358,17 +442,25 @@ if ( ! class_exists( 'Woostify_Dynamic_Css' ) ) :
 					$mapped_domain   = domain_mapping_siteurl( false );
 					$original_domain = get_original_url( 'siteurl' );
 					$css_uri         = str_replace( $original_domain, $mapped_domain, $css_uri );
+					$global_css_uri  = str_replace( $original_domain, $mapped_domain, $global_css_uri );
 				}
 			}
 			// Strip protocols.
 			$css_uri = str_replace( 'https://', '//', $css_uri );
 			$css_uri = str_replace( 'http://', '//', $css_uri );
 
+			$global_css_uri = str_replace( 'https://', '//', $global_css_uri );
+			$global_css_uri = str_replace( 'http://', '//', $global_css_uri );
+
 			if ( 'path' === $target ) {
 				return $file_path;
 			} elseif ( 'url' === $target || 'uri' === $target ) {
 				$timestamp = ( file_exists( $file_path ) ) ? '?timestamp=' . filemtime( $file_path ) : '';
-				return $css_uri . $timestamp;
+				if ( $is_global ) {
+					return $global_css_uri . $timestamp;
+				} else {
+					return $css_uri . $timestamp;
+				}
 			}
 
 		}
