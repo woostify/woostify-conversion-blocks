@@ -1,7 +1,7 @@
 {
-  "name": "woostify-block",
+  "name": "woostify-conversion-blocks",
   "version": "1.0.0",
-  "description": "Advanced blocks for Gutenberg editor",
+  "description": "Advanced blocks for Block editor",
   "main": "dist/blocks.js",
   "scripts": {
     "build": "wp-scripts build",
