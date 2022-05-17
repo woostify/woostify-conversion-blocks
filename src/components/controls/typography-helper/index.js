@@ -3,11 +3,11 @@ import { Fragment } from '@wordpress/element';
 import WoostifyButtonPopoverControl from '../button-popover';
 import WCBTypographyControl from '../typography';
 
-const WCBTypographyHelperControl = (props) => {
-	const onChange = (selector, value) => {
-		props.setAttributes({
-			[selector]: value,
-		});
+const WCBTypographyHelperControl = ( props ) => {
+	const onChange = ( selector, value ) => {
+		props.setAttributes( {
+			[ selector ]: value,
+		} );
 	};
 
 	const { attributes, setAttributes } = props;
@@ -15,82 +15,86 @@ const WCBTypographyHelperControl = (props) => {
 	return (
 		<Fragment>
 			<WoostifyButtonPopoverControl
-				buttonLabel={props.label}
-				popoverHeading={props.popoverHeading}
+				buttonLabel={ props.label }
+				popoverHeading={ props.popoverHeading }
 			>
 				<WCBTypographyControl
-					fontSizeUnits={['px', 'em', 'rem']}
-					fontSize={attributes.fontSize}
-					fontSizeTablet={attributes.fontSizeTablet}
-					fontSizeMobile={attributes.fontSizeMobile}
-					fontSizeUnit={attributes.fontSizeUnit}
-					fontSizeUnitTablet={attributes.fontSizeUnitTablet}
-					fontSizeUnitMobile={attributes.fontSizeUnitMobile}
-					fontFamily={attributes.fontFamily}
-					fontWeight={attributes.fontWeight}
-					fontStyle={attributes.fontStyle}
-					textTransform={attributes.fontTransform}
-					lineHeight={attributes.lineHeight}
-					lineHeightTablet={attributes.lineHeightTablet}
-					lineHeightMobile={attributes.lineHeightMobile}
-					lineHeightUnit={attributes.lineHeightUnit}
-					lineHeightUnitTablet={attributes.lineHeightUnitTablet}
-					lineHeightUnitMobile={attributes.lineHeightUnitMobile}
-					letterSpacing={attributes.letterSpacing}
-					letterSpacingTablet={attributes.letterSpacingTablet}
-					letterSpacingMobile={attributes.letterSpacingMobile}
-					onChangeFontStyle={(value) => onChange('fontStyle', value)}
-					onChangeTextTransform={(value) =>
-						onChange('fontTransform', value)
+					fontSizeUnits={ [ 'px', 'em', 'rem' ] }
+					fontSize={ attributes.fontSize }
+					fontSizeTablet={ attributes.fontSizeTablet }
+					fontSizeMobile={ attributes.fontSizeMobile }
+					fontSizeUnit={ attributes.fontSizeUnit }
+					fontSizeUnitTablet={ attributes.fontSizeUnitTablet }
+					fontSizeUnitMobile={ attributes.fontSizeUnitMobile }
+					fontFamily={ attributes.fontFamily }
+					fontWeight={ attributes.fontWeight }
+					fontStyle={ attributes.fontStyle }
+					textTransform={ attributes.fontTransform }
+					lineHeight={ attributes.lineHeight }
+					lineHeightTablet={ attributes.lineHeightTablet }
+					lineHeightMobile={ attributes.lineHeightMobile }
+					lineHeightUnit={ attributes.lineHeightUnit }
+					lineHeightUnitTablet={ attributes.lineHeightUnitTablet }
+					lineHeightUnitMobile={ attributes.lineHeightUnitMobile }
+					letterSpacing={ attributes.letterSpacing }
+					letterSpacingTablet={ attributes.letterSpacingTablet }
+					letterSpacingMobile={ attributes.letterSpacingMobile }
+					onChangeFontStyle={ ( value ) =>
+						onChange( 'fontStyle', value )
 					}
-					onChangeFontWeight={(value) =>
-						onChange('fontWeight', value)
+					onChangeTextTransform={ ( value ) =>
+						onChange( 'fontTransform', value )
 					}
-					onChangeFontFamily={(value) =>
-						onChange('fontFamily', value)
+					onChangeFontWeight={ ( value ) =>
+						onChange( 'fontWeight', value )
 					}
-					onChangeFontSize={(value) => onChange('fontSize', value)}
-					onChangeFontSizeTablet={(value) =>
-						onChange('fontSizeTablet', value)
+					onChangeFontFamily={ ( value ) =>
+						onChange( 'fontFamily', value )
 					}
-					onChangeFontSizeMobile={(value) =>
-						onChange('fontSizeMobile', value)
+					onChangeFontSize={ ( value ) =>
+						onChange( 'fontSize', value )
 					}
-					onChangeFontSizeUnit={(value) =>
-						onChange('fontSizeUnit', value)
+					onChangeFontSizeTablet={ ( value ) =>
+						onChange( 'fontSizeTablet', value )
 					}
-					onChangeFontSizeUnitTablet={(value) =>
-						onChange('fontSizeUnitTablet', value)
+					onChangeFontSizeMobile={ ( value ) =>
+						onChange( 'fontSizeMobile', value )
 					}
-					onChangeFontSizeUnitMobile={(value) =>
-						onChange('fontSizeUnitMobile', value)
+					onChangeFontSizeUnit={ ( value ) =>
+						onChange( 'fontSizeUnit', value )
 					}
-					onChangeLineHeight={(value) =>
-						onChange('lineHeight', value)
+					onChangeFontSizeUnitTablet={ ( value ) =>
+						onChange( 'fontSizeUnitTablet', value )
 					}
-					onChangeLineHeightTablet={(value) =>
-						onChange('lineHeightTablet', value)
+					onChangeFontSizeUnitMobile={ ( value ) =>
+						onChange( 'fontSizeUnitMobile', value )
 					}
-					onChangeLineHeightMobile={(value) =>
-						onChange('lineHeightMobile', value)
+					onChangeLineHeight={ ( value ) =>
+						onChange( 'lineHeight', value )
 					}
-					onChangeLineHeightUnit={(value) =>
-						onChange('lineHeightUnit', value)
+					onChangeLineHeightTablet={ ( value ) =>
+						onChange( 'lineHeightTablet', value )
 					}
-					onChangeLineHeightUnitTablet={(value) =>
-						onChange('lineHeightUnitTablet', value)
+					onChangeLineHeightMobile={ ( value ) =>
+						onChange( 'lineHeightMobile', value )
 					}
-					onChangeLineHeightUnitMobile={(value) =>
-						onChange('lineHeightUnitMobile', value)
+					onChangeLineHeightUnit={ ( value ) =>
+						onChange( 'lineHeightUnit', value )
 					}
-					onChangeLetterSpacing={(value) =>
-						onChange('letterSpacing', value)
+					onChangeLineHeightUnitTablet={ ( value ) =>
+						onChange( 'lineHeightUnitTablet', value )
 					}
-					onChangeLetterSpacingTablet={(value) =>
-						onChange('letterSpacingTablet', value)
+					onChangeLineHeightUnitMobile={ ( value ) =>
+						onChange( 'lineHeightUnitMobile', value )
 					}
-					onChangeLetterSpacingMobile={(value) =>
-						onChange('letterSpacingMobile', value)
+					onChangeLetterSpacing={ ( value ) =>
+						onChange( 'letterSpacing', value )
+					}
+					onChangeLetterSpacingTablet={ ( value ) =>
+						onChange( 'letterSpacingTablet', value )
+					}
+					onChangeLetterSpacingMobile={ ( value ) =>
+						onChange( 'letterSpacingMobile', value )
 					}
 				/>
 			</WoostifyButtonPopoverControl>

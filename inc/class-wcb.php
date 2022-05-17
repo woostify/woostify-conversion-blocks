@@ -206,6 +206,7 @@ if ( ! class_exists( 'WCB' ) ) {
 				'tablet' => get_option( 'wcb_settings_tablet_breakpoint', '1024' ),
 				'mobile' => get_option( 'wcb_settings_mobile_breakpoint', '768' ),
 			);
+
 			wp_localize_script(
 				'wcb-blocks-scripts',
 				'wcb_params',

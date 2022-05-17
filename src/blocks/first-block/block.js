@@ -4,7 +4,7 @@ import blockAttributes from './attributes';
 import Edit from './edit';
 import save from './save';
 
-registerBlockType('wcb/first-block', {
+registerBlockType( 'wcb/first-block', {
 	attributes: blockAttributes,
 	/**
 	 * @see ./edit.js
@@ -15,4 +15,4 @@ registerBlockType('wcb/first-block', {
 	 * @see ./save.js
 	 */
 	save,
-});
+} );

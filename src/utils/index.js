@@ -7,76 +7,94 @@ export * from './global-style';
  * @param {*} string
  * @returns
  */
-export const capitalizeFirstLetter = (string) => {
-	return string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalizeFirstLetter = ( string ) => {
+	return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
 };
 
 export const getDocumentHead = () => {
-	let head = document.querySelector('head');
+	let head = document.querySelector( 'head' );
 
-	if (isEditingContent()) {
+	if ( isEditingContent() ) {
 		head = document
-			.querySelector('iframe[name="editor-canvas"]')
-			.contentWindow.document.querySelector('head');
+			.querySelector( 'iframe[name="editor-canvas"]' )
+			.contentWindow.document.querySelector( 'head' );
 	}
 
 	return head;
 };
 
 export const getDocumentBody = () => {
-	let body = document.querySelector('body');
+	let body = document.querySelector( 'body' );
 
-	if (isEditingContent()) {
+	if ( isEditingContent() ) {
 		body = document
-			.querySelector('iframe[name="editor-canvas"]')
-			.contentWindow.document.querySelector('body');
+			.querySelector( 'iframe[name="editor-canvas"]' )
+			.contentWindow.document.querySelector( 'body' );
 	}
 
 	return body;
 };
 
 export const isEditingContent = () =>
-	!!document.querySelector('iframe[name="editor-canvas"]');
+	!! document.querySelector( 'iframe[name="editor-canvas"]' );
 
 export const isEditingPost = () => {
-    if ( document.querySelector('.edit-post-visual-editor') ) {
-		return true
+	if ( document.querySelector( '.edit-post-visual-editor' ) ) {
+		return true;
 	}
 
 	return false;
-}
+};
 
-export const JSToCSS = (attrs, originAttrs) => {
+export const JSToCSS = ( attrs, originAttrs ) => {
 	let cssString = '';
-	for (let objectKey in attrs) {
-		if (objectKey.includes('Unit')) {
+	for ( let objectKey in attrs ) {
+		if ( objectKey.includes( 'Unit' ) ) {
 			continue;
 		}
 		let suffix = '';
-		if (objectKey.includes('fontFamily')) {
+		if ( objectKey.includes( 'fontFamily' ) ) {
 			suffix = ', Sans-serif';
 		}
-		if (objectKey.includes('letterSpacing')) {
+		if ( objectKey.includes( 'letterSpacing' ) ) {
 			suffix = 'px';
 		}
-		if (objectKey.includes('fontSize') || objectKey.includes('lineHeight')) {
+		if (
+			objectKey.includes( 'fontSize' ) ||
+			objectKey.includes( 'lineHeight' )
+		) {
 			suffix = 'px';
-			let realObjectKey = objectKey.replace(/Mobile|Tablet/g,'')
-			if ( objectKey.includes('Tablet') && originAttrs[realObjectKey + 'UnitTablet'] ) {
-				suffix = originAttrs[realObjectKey + 'UnitTablet'];
+			let realObjectKey = objectKey.replace( /Mobile|Tablet/g, '' );
+			if (
+				objectKey.includes( 'Tablet' ) &&
+				originAttrs[ realObjectKey + 'UnitTablet' ]
+			) {
+				suffix = originAttrs[ realObjectKey + 'UnitTablet' ];
 			}
-			if ( objectKey.includes('Tablet') && originAttrs[realObjectKey + 'UnitTablet'] ) {
-				suffix = originAttrs[realObjectKey + 'UnitTablet'];
+			if (
+				objectKey.includes( 'Tablet' ) &&
+				originAttrs[ realObjectKey + 'UnitTablet' ]
+			) {
+				suffix = originAttrs[ realObjectKey + 'UnitTablet' ];
 			}
-			if ( ! objectKey.includes('Tablet') && ! objectKey.includes('Mobile') && originAttrs[objectKey + 'Unit'] ) {
-				suffix = originAttrs[objectKey + 'Unit'];
+			if (
+				! objectKey.includes( 'Tablet' ) &&
+				! objectKey.includes( 'Mobile' ) &&
+				originAttrs[ objectKey + 'Unit' ]
+			) {
+				suffix = originAttrs[ objectKey + 'Unit' ];
 			}
 		}
-		let cssSelector = objectKey.replace(/Mobile|Tablet/g,'');
-		cssString += cssSelector.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`) +
-		': ' +
-		originAttrs[objectKey] +
-		suffix + ';';
+		let cssSelector = objectKey.replace( /Mobile|Tablet/g, '' );
+		cssString +=
+			cssSelector.replace(
+				/([A-Z])/g,
+				( g ) => `-${ g[ 0 ].toLowerCase() }`
+			) +
+			': ' +
+			originAttrs[ objectKey ] +
+			suffix +
+			';';
 	}
 
 	return cssString;

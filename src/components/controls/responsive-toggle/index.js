@@ -15,53 +15,54 @@ const DEVICE_TYPES = {
 
 const DEVICE_TYPES_OPTIONS = [
 	{
-		label: __('Desktop', 'wcb'),
+		label: __( 'Desktop', 'wcb' ),
 		value: 'desktop',
 		icon: 'desktop',
 	},
 	{
-		label: __('Tablet', 'wcb'),
+		label: __( 'Tablet', 'wcb' ),
 		value: 'tablet',
 		icon: 'tablet',
 	},
 	{
-		label: __('Mobile', 'wcb'),
+		label: __( 'Mobile', 'wcb' ),
 		value: 'mobile',
 		icon: 'smartphone',
 	},
 ];
 
-const ResponsiveToggle = (props) => {
+const ResponsiveToggle = ( props ) => {
 	const deviceType = getDeviceType();
 
-	const setDeviceType = useCallback((device) => {
-		const { __experimentalSetPreviewDeviceType: setPreviewDeviceType } =
-			dispatch('core/edit-post');
+	const setDeviceType = useCallback( ( device ) => {
+		const {
+			__experimentalSetPreviewDeviceType: setPreviewDeviceType,
+		} = dispatch( 'core/edit-post' );
 
-		setPreviewDeviceType(DEVICE_TYPES[device]);
-	}, []);
+		setPreviewDeviceType( DEVICE_TYPES[ device ] );
+	}, [] );
 
-	const devices = useMemo(() => {
-		return DEVICE_TYPES_OPTIONS.filter(({ value }) =>
-			props.devices?.includes(value)
+	const devices = useMemo( () => {
+		return DEVICE_TYPES_OPTIONS.filter( ( { value } ) =>
+			props.devices?.includes( value )
 		);
-	}, [props.devices]);
+	}, [ props.devices ] );
 
-	if (devices <= 1) {
+	if ( devices <= 1 ) {
 		return null;
 	}
 
-	if (!deviceType) {
+	if ( ! deviceType ) {
 		return null;
 	}
 
 	return (
 		<IconToggleControl
-			value={deviceType}
-			options={devices}
-			onChange={(device) => setDeviceType(device)}
-			buttonsLabel={true}
+			value={ deviceType }
+			options={ devices }
+			onChange={ ( device ) => setDeviceType( device ) }
+			buttonsLabel={ true }
 		/>
 	);
 };
-export default memo(ResponsiveToggle);
+export default memo( ResponsiveToggle );

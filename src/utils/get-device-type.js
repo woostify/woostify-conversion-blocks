@@ -1,11 +1,11 @@
 import { useSelect } from '@wordpress/data';
 
 export const getDeviceType = () => {
-	const { deviceType } = useSelect((select) => {
+	const { deviceType } = useSelect( ( select ) => {
 		const { __experimentalGetPreviewDeviceType: getPreviewDeviceType } =
-			select('core/edit-post') || false;
+			select( 'core/edit-post' ) || false;
 
-		if (!getPreviewDeviceType) {
+		if ( ! getPreviewDeviceType ) {
 			return {
 				deviceType: null,
 			};
@@ -14,7 +14,7 @@ export const getDeviceType = () => {
 		return {
 			deviceType: getPreviewDeviceType(),
 		};
-	}, []);
+	}, [] );
 
 	return deviceType;
 };
@@ -22,10 +22,10 @@ export const getDeviceType = () => {
 export const getDeviceSuffix = () => {
 	let deviceSuffix = '';
 	let currDevice = getDeviceType();
-	if ('Tablet' === currDevice) {
+	if ( 'Tablet' === currDevice ) {
 		deviceSuffix = 'Tablet';
 	}
-	if ('Mobile' === currDevice) {
+	if ( 'Mobile' === currDevice ) {
 		deviceSuffix = 'Mobile';
 	}
 
