@@ -73,7 +73,25 @@ if ( ! class_exists( 'WCB' ) ) {
 
 			if ( ! is_admin() ) {
 				add_filter( 'wcb_post_dynamic_css', array( $this, 'update_blocks_styles' ) );
+				add_filter( 'render_block_data', array( $this, 'enqueue_google_font' ) );
 			}
+		}
+
+		/**
+		 * Enqueue google font before block rendered
+		 *
+		 * @param array $block Block data.
+		 */
+		public function enqueue_google_font( $block ) {
+			if ( 'wcb/first-block' === $block['blockName'] ) {
+				$block_attrs = $block['attrs'];
+
+				if ( isset( $block_attrs['fontFamily'] ) && '' !== $block_attrs['fontFamily'] && wcb_is_web_font( $block_attrs['fontFamily'] ) ) {
+					$style_id = 'wcb-google-font-' . strtolower( str_replace( ' ', '-', $block_attrs['fontFamily'] ) );
+					wp_enqueue_style( $style_id, wcb_get_google_font_url( $block_attrs['fontFamily'] ), array(), WCB_VERSION );
+				}
+			}
+			return $block;
 		}
 
 		/**

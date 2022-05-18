@@ -35,6 +35,30 @@ if ( ! class_exists( 'WCB_Global_Settings' ) ) {
 		public function __construct() {
 			// Register settings.
 			add_action( 'init', array( $this, 'register_settings' ) );
+			
+			add_filter( 'init', array( $this, 'enqueue_google_font' ) );
+		}
+
+		/**
+		 * Enqueue google font before block rendered
+		 *
+		 * @param array $block Block data.
+		 */
+		public function enqueue_google_font( $block ) {
+			$typos = get_option( 'wcb_global_typography', '' );
+
+			if ( '' === $typos ) {
+				return;
+			}
+
+			$typos = $typos[0];
+
+			foreach ( $typos as $attrs ) {
+				if ( isset( $attrs['fontFamily'] ) && '' !== $attrs['fontFamily'] && wcb_is_web_font( $attrs['fontFamily'] ) ) {
+					$style_id = 'wcb-google-font-' . strtolower( str_replace( ' ', '-', $attrs['fontFamily'] ) );
+					wp_enqueue_style( $style_id, wcb_get_google_font_url( $attrs['fontFamily'] ), array(), WCB_VERSION );
+				}
+			}
 		}
 
 		/**
