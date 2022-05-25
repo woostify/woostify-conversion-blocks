@@ -1,1 +1,2 @@
-import './blocks/first-block/block.js';
+import './blocks/section/block';
+import './blocks/column/block';

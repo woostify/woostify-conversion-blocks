@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 export default {
 	uniqueId: {
 		type: 'string',
@@ -203,4 +202,3 @@ export default {
 		default: '',
 	},
 };
-/* eslint-enable no-undef */

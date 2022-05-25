@@ -296,12 +296,12 @@ if ( ! class_exists( 'WCB' ) ) {
 		public function register_blocks() {
 			$blocks = array(
 				array(
-					'slug'  => 'first-block',
-					'title' => __( 'First Block', 'wcb' ),
+					'slug'  => 'section',
+					'title' => __( 'Section', 'wcb' ),
 				),
 				array(
-					'slug'  => 'second-block',
-					'title' => __( 'Second Block', 'wcb' ),
+					'slug'  => 'column',
+					'title' => __( 'Column', 'wcb' ),
 				),
 			);
 
@@ -319,7 +319,7 @@ if ( ! class_exists( 'WCB' ) ) {
 		public function register_block_category( $block_categories, $block_editor_context ) {
 			$new_category = array(
 				'slug'  => 'wcb',
-				'title' => __( 'Woostify Block', 'wcb' ),
+				'title' => __( 'Woostify Conversion Blocks', 'wcb' ),
 				'icon'  => 'wordpress', // Slug of a WordPress Dashicon or custom SVG.
 			);
 

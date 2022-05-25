@@ -18,8 +18,6 @@ import WoostifyBaseControl from '../../components/controls/base';
 import WoostifyDimensionsControl from '../../components/controls/dimensions';
 import WCBTypographyHelperControl from '../../components/controls/typography-helper';
 
-import './editor.scss';
-
 function Edit( props ) {
 	const deviceSuffix = getDeviceSuffix();
 
