@@ -6,6 +6,13 @@ import save from './save';
 
 registerBlockType( 'wcb/column', {
 	attributes: blockAttributes,
+	parent: [ 'wcb/section' ],
+	supports: {
+		inserter: false,
+		reusable: false,
+		html: false,
+	},
+	
 	/**
 	 * @see ./edit.js
 	 */

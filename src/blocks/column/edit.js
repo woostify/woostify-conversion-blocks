@@ -7,6 +7,9 @@ import {
 	ColorPalette,
 	InspectorControls,
 } from '@wordpress/block-editor';
+import { select } from '@wordpress/data';
+
+import { Fragment } from '@wordpress/element'
 
 import { PanelBody } from '@wordpress/components';
 
@@ -15,12 +18,28 @@ import { getDeviceSuffix } from '../../utils/get-device-type';
 function Edit( props ) {
     const blockProps = useBlockProps();
 
+    const { clientId } = props;
+
+    const { getBlockOrder, getBlockRootClientId, getBlockAttributes } = select('core/block-editor');
+
+    const hasChildBlocks = getBlockOrder( clientId ).length > 0;
+
+    //const { getBlockOrder, getBlockRootClientId, getBlockAttributes } = !wp.blockEditor ? select( 'core/editor' ) : select( 'core/block-editor' );
+
+    const classnames = 'wcb-column-wrapper'
+
     return (
-        <div { ...blockProps }>
-            <InnerBlocks 
-                renderAppender={ () => <InnerBlocks.ButtonBlockAppender /> }
-            />
-        </div>
+            <Fragment>
+                <InnerBlocks 
+                    templateLock={ false }
+                    template={ [] }
+                    renderAppender={ (
+                        hasChildBlocks ?
+                            undefined :
+                            () => <InnerBlocks.ButtonBlockAppender />
+                    ) }
+                />
+            </Fragment>
     )
 }
 

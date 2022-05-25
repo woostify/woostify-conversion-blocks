@@ -237,7 +237,7 @@ if ( ! class_exists( 'WCB' ) ) {
 
 			wp_register_style(
 				'wcb-editor-style',
-				WCB_URI . 'dist/style-blocks.css',
+				WCB_URI . 'dist/blocks.css',
 				array( 'wp-edit-blocks' ),
 				WCB_VERSION
 			);
@@ -282,7 +282,7 @@ if ( ! class_exists( 'WCB' ) ) {
 		public function enqueue_block_frontend_assets() {
 			wp_register_style(
 				'wcb-front-end',
-				WCB_URI . 'dist/blocks.css',
+				WCB_URI . 'dist/style-blocks.css',
 				array(),
 				WCB_VERSION
 			);
