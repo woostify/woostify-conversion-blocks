@@ -1,0 +1,7 @@
+.wcb-col {
+  flex: 0 1 auto;
+}
+
+.wcb-col.wcb-col-50 {
+  flex-basis: 50%;
+}

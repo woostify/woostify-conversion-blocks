@@ -1,7 +1,11 @@
 import './style.scss';
 
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+    InnerBlocks,
+} from '@wordpress/block-editor';
+
 export default function save( { attributes } ) {
 	return (
 		<div
@@ -9,7 +13,7 @@ export default function save( { attributes } ) {
 			className="wcb-block-wrapper"
 			id={ `wcb-${ attributes.uniqueId }` }
 		>
-			Section Block
+			<InnerBlocks.Content />
 		</div>
 	);
 }

@@ -75,6 +75,24 @@ let _zip = ( done ) => {
 };
 gulp.task( 'zip', gulp.series( _pot, _zip ) );
 
+// Sass.
+let _sass = ( done ) => {
+	gulp.src( [ 'assets/css/**/*.scss', '!assets/css/**/*.css' ] )
+		.pipe(
+			globbing( {
+				extensions: [ '.scss' ],
+			} )
+		)
+		.pipe(
+			sass( {
+				outputStyle: 'expanded',
+			} ).on( 'error', sass.logError )
+		)
+		.pipe( gulp.dest( 'assets/css' ) );
+
+	done();
+};
+
 // Sass admin.
 let _sassAdmin = ( done ) => {
 	gulp.src( [ 'assets/css/admin/**/*.scss', '!assets/css/admin/**/*.css' ] )
@@ -110,9 +128,13 @@ let _minJs = ( done ) => {
 
 // Watch task.
 let _watch = ( done ) => {
+	// gulp.watch(
+	// 	[ 'assets/css/admin/**/*.scss', '!assets/css/admin/**/*.css' ],
+	// 	_sassAdmin
+	// );
 	gulp.watch(
-		[ 'assets/css/admin/**/*.scss', '!assets/css/admin/**/*.css' ],
-		_sassAdmin
+		[ 'assets/css/**/*.scss', '!assets/css/**/*.css' ],
+		_sass
 	);
 	gulp.watch( [ 'assets/js/**/*.js', '!assets/**/*.min.js' ], _minJs );
 

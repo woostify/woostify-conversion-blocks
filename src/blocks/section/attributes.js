@@ -3,7 +3,7 @@ export default {
 		type: 'string',
 		default: '',
 	},
-	column: {
+	columns: {
 		type: 'number',
 		default: 2,
 	}

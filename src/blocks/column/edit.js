@@ -24,8 +24,6 @@ function Edit( props ) {
 
     const hasChildBlocks = getBlockOrder( clientId ).length > 0;
 
-    //const { getBlockOrder, getBlockRootClientId, getBlockAttributes } = !wp.blockEditor ? select( 'core/editor' ) : select( 'core/block-editor' );
-
     const classnames = 'wcb-column-wrapper'
 
     return (
