@@ -303,6 +303,10 @@ if ( ! class_exists( 'WCB' ) ) {
 					'slug'  => 'column',
 					'title' => __( 'Column', 'wcb' ),
 				),
+				array(
+					'slug'  => 'first-block',
+					'title' => __( 'First block', 'wcb' ),
+				),
 			);
 
 			foreach ( $blocks as $block ) {

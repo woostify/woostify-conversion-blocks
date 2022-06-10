@@ -1,0 +1,13 @@
+:root {
+    --wcb-default-column-margin: 10px;
+}
+
+.wcb-section-wrapper {
+    .wcb-column {
+        margin: var(--wcb-default-column-margin);
+    }
+    .block-editor-block-list__block.wp-block {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}

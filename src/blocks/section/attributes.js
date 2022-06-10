@@ -5,6 +5,14 @@ export default {
 	},
 	columns: {
 		type: 'number',
-		default: 2,
+		default: '',
+	},
+	layout: {
+		type: 'string',
+		default: '',
+	},
+	isSetColumnWidth: {
+		type: 'boolean',
+		default: false,
 	}
 }
