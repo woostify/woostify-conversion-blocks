@@ -16,7 +16,7 @@ import {
     Button
 } from '@wordpress/components';
 import { select, dispatch } from '@wordpress/data';
-import { Fragment, useState, useEffect, useCallback, useLayoutEffect } from '@wordpress/element';
+import { Fragment, useState, useEffect, useCallback } from '@wordpress/element';
 import { times } from 'lodash';
 import { getBlockFromExample } from '@wordpress/blocks';
 
@@ -106,9 +106,8 @@ function Edit( props ) {
 			}
         }
 
-        const blockWidth = Number.parseFloat( 100 / numColumns ).toFixed(3);
+        const blockWidth = Number.parseFloat( 100 / numColumns ).toFixed(1);
         const newInnerBlocks = getBlocksByClientId( clientId )[0]?.innerBlocks;
-        console.log( newInnerBlocks );
         newInnerBlocks.forEach(function(child, index){
             dispatch('core/block-editor').updateBlockAttributes(child.clientId, {width: blockWidth})
         });

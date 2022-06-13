@@ -13,7 +13,6 @@ class WoostifyDimensionsControl extends Component {
 
 		this.onReset = this.onReset.bind( this );
 		this.onChangeAttr = this.onChangeAttr.bind( this );
-		this.onChangeAttr = this.onChangeAttr.bind( this );
 		this.onChangeLinkedValues = this.onChangeLinkedValues.bind( this );
 	}
 

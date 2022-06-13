@@ -95,6 +95,19 @@ if ( ! class_exists( 'WCB' ) ) {
 		}
 
 		/**
+		 * Plugin sets up.
+		 */
+		public function setup() {
+			if ( ! defined( 'WCB_VERSION' ) ) {
+				return;
+			}
+
+			wp_set_script_translations( 'wcb-blocks-scripts', 'wcb', WCB_PATH . 'languages/' );
+
+			load_plugin_textdomain( 'wcb', false, WCB_PATH . 'languages/' );
+		}
+
+		/**
 		 * Update blocks css
 		 *
 		 * @param String $current_css Current css content in css file.
@@ -108,21 +121,13 @@ if ( ! class_exists( 'WCB' ) ) {
 			$blocks = parse_blocks( $post->post_content );
 			foreach ( $blocks as $block ) {
 				$style .= $this->get_blocks_styles( $block['blockName'], $block['attrs'] );
+				global $wp_version;
+				if ( 5.5 <= $wp_version ) {
+					// Check blocks in 2nd level and beyond
+					$style .= $this->get_nested_blocks_styles( $block );
+				}
 			}
 			return $style;
-		}
-
-		/**
-		 * Plugin sets up.
-		 */
-		public function setup() {
-			if ( ! defined( 'WCB_VERSION' ) ) {
-				return;
-			}
-
-			wp_set_script_translations( 'wcb-blocks-scripts', 'wcb', WCB_PATH . 'languages/' );
-
-			load_plugin_textdomain( 'wcb', false, WCB_PATH . 'languages/' );
 		}
 
 		/**
@@ -141,6 +146,33 @@ if ( ! class_exists( 'WCB' ) ) {
 			return $blocks_style;
 		}
 
+		public function get_nested_blocks_styles( $block, $level = 2, &$styles = array() ) {
+			if ( isset( $block['innerBlocks'] ) ) {
+				foreach ( $block['innerBlocks'] as $key => $inner_block ) {
+
+					if ( ! str_contains( $inner_block['blockName'], 'wcb' ) ) {
+						continue;
+					}
+
+					// Get styles.
+					$new_style_html = $this->generate_block_style( $inner_block['blockName'], $inner_block['attrs'] );
+
+					// Add the styles to the array.
+					$styles[] = $new_style_html;
+
+					self::get_nested_blocks_styles( $inner_block, $level + 1, $styles );
+				}
+			}
+
+			$final_styles = $styles;
+			if ( ! is_string( $final_styles ) ) {
+				// Convert array to string.
+				$final_styles = implode( '', array_unique( $styles ) );
+			}
+
+			return $final_styles;
+		}
+
 		/**
 		 * Generate block style from attributes
 		 *
@@ -156,7 +188,27 @@ if ( ! class_exists( 'WCB' ) ) {
 			$tablet_style = '';
 			$mobile_style = '';
 
-			$block_class = $block_attrs['uniqueId'];
+			$block_id = $block_attrs['uniqueId'];
+			if ( 'wcb/column' === $block_name ) {
+				$margin_unit = isset( $block_attrs['marginUnit'] ) ? $block_attrs['marginUnit'] : 'px';
+				$block_style     .= '#wcb-' . $block_id . ' {';
+					$block_style .= 'width: ' . $block_attrs['width'] . '%;';
+				$block_style     .= '}';
+				$block_style     .= '#wcb-' . $block_id . ' .wcb-column-wrapper {';
+					if ( isset( $block_attrs['marginTop'] ) ) {
+						$block_style .= 'margin-top: ' . $block_attrs['marginTop'] . $margin_unit . ';';
+					}
+					if ( isset( $block_attrs['marginRight'] ) ) {
+						$block_style .= 'margin-right: ' . $block_attrs['marginRight'] . $margin_unit . ';';
+					}
+					if ( isset( $block_attrs['marginBottom'] ) ) {
+						$block_style .= 'margin-bottom: ' . $block_attrs['marginBottom'] . $margin_unit . ';';
+					}
+					if ( isset( $block_attrs['marginLeft'] ) ) {
+						$block_style .= 'margin-left: ' . $block_attrs['marginLeft'] . $margin_unit . ';';
+					}
+				$block_style     .= '}';
+			}
 			if ( 'wcb/first-block' === $block_name ) {
 				$bg_color              = isset( $block_attrs['bg_color'] ) ? esc_html( $block_attrs['bg_color'] ) : '';
 				$text_color            = isset( $block_attrs['text_color'] ) ? esc_html( $block_attrs['text_color'] ) : '';
@@ -165,7 +217,7 @@ if ( ! class_exists( 'WCB' ) ) {
 				$font_size_unit_mobile = isset( $block_attrs['fontSizeUnitMobile'] ) ? esc_html( $block_attrs['fontSizeUnitMobile'] ) : 'px';
 
 				// Desktop style.
-				$block_style     .= '#wcb-' . $block_class . ' h2 {';
+				$block_style     .= '#wcb-' . $block_id . ' h2 {';
 					$block_style .= 'background-color: ' . $bg_color . ';';
 					$block_style .= 'color: ' . $text_color . ';';
 				if ( isset( $block_attrs['fontFamily'] ) ) {
@@ -181,7 +233,7 @@ if ( ! class_exists( 'WCB' ) ) {
 
 				// Tablet style.
 				$tablet_style     .= '@media (max-width:' . $tablet_breakpoint . 'px) {';
-					$tablet_style .= '#wcb-' . $block_class . ' h2 {';
+					$tablet_style .= '#wcb-' . $block_id . ' h2 {';
 				if ( isset( $block_attrs['fontSizeTablet'] ) ) {
 					$tablet_style .= 'font-size: ' . $block_attrs['fontSizeTablet'] . $font_size_unit_tablet . ';';
 				}
@@ -190,7 +242,7 @@ if ( ! class_exists( 'WCB' ) ) {
 
 				// Mobile Style.
 				$mobile_style     .= '@media (max-width:' . $mobile_breakpoint . 'px) {';
-					$mobile_style .= '#wcb-' . $block_class . ' h2 {';
+					$mobile_style .= '#wcb-' . $block_id . ' h2 {';
 				if ( isset( $block_attrs['fontSizeMobile'] ) ) {
 					$mobile_style .= 'font-size: ' . $block_attrs['fontSizeMobile'] . $font_size_unit_mobile . ';';
 				}
@@ -281,12 +333,19 @@ if ( ! class_exists( 'WCB' ) ) {
 		 */
 		public function enqueue_block_frontend_assets() {
 			wp_register_style(
+				'wcb-general',
+				WCB_URI . 'assets/css/general.css',
+				array(),
+				WCB_VERSION
+			);
+			wp_register_style(
 				'wcb-front-end',
 				WCB_URI . 'dist/style-blocks.css',
 				array(),
 				WCB_VERSION
 			);
 
+			wp_enqueue_style( 'wcb-general' );
 			wp_enqueue_style( 'wcb-front-end' );
 		}
 

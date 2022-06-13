@@ -7,9 +7,10 @@ import {
 } from '@wordpress/block-editor';
 
 export default function save( { attributes } ) {
+	const blockProps = useBlockProps.save();
 	return (
 		<div
-			{ ...useBlockProps.save() }
+			{ ...blockProps }
 			className="wcb-block-wrapper"
 			id={ `wcb-${ attributes.uniqueId }` }
 		>

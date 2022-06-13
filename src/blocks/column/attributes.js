@@ -19,6 +19,10 @@ export default {
 		type: 'string',
 		default: '',
 	},
+	marginLeft: {
+		type: 'string',
+		default: '',
+	},
 	marginLeftTablet: {
 		type: 'string',
 		default: '',

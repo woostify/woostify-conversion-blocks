@@ -8,26 +8,35 @@ import {
 	InspectorControls,
 } from '@wordpress/block-editor';
 import { select } from '@wordpress/data';
-
-import { Fragment } from '@wordpress/element'
-
-import { PanelBody } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
+import { PanelBody, RangeControl, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 
 import WoostifyBaseControl from '../../components/controls/base';
 import WoostifyDimensionsControl from '../../components/controls/dimensions';
 
 import { getDeviceSuffix } from '../../utils/get-device-type';
+import { getAllUniqueIds } from '../../utils/index';
 
 function Edit( props ) {
     const blockProps = useBlockProps();
-
     const deviceSuffix = getDeviceSuffix();
-
     const { attributes, setAttributes, clientId } = props;
+    
+    const [ colWidth, setColWidth ] = useState( attributes.width || false );
 
     const { getBlockOrder } = select('core/block-editor');
 
     const hasChildBlocks = getBlockOrder( clientId ).length > 0;
+
+    useEffect( () => {
+        // Generate a unique ID if none exists or if the same ID exists on this page.
+		const allBlocks = select( 'core/block-editor' ).getBlocks();
+		const uniqueIds = getAllUniqueIds( allBlocks, [], clientId );
+
+		if ( ! attributes.uniqueId || uniqueIds.includes( attributes.uniqueId ) ) {
+			setAttributes( { uniqueId: clientId.substr( 2, 9 ).replace( '-', '' ) } );
+		}
+    }, [] )
 
     const classnames = 'wcb-column wcb-column-wrapper';
 
@@ -47,30 +56,48 @@ function Edit( props ) {
             <InspectorControls>
                 <PanelBody title={ __( 'General Settings', 'wcb' ) }>
                     <WoostifyBaseControl
-                            label={ __( 'Spacing', 'wcb' ) }
-                            responsive={ [ 'desktop', 'tablet', 'mobile' ] }
-                            units={ [ 'px', 'em', 'rem' ] }
-                            selectedUnit={
-                                attributes[ 'marginUnit' + deviceSuffix ]
-                            }
-                            onUnitClick={ ( unit ) =>
-                                setAttributes( {
-                                    [ 'marginUnit' + deviceSuffix ]: unit,
-                                } )
-                            }
-                        >
-                            <WoostifyDimensionsControl
-                                { ...props }
-                                type={ 'margin' }
-                                attrTop={ 'marginTop' + deviceSuffix }
-                                attrRight={ 'marginRight' + deviceSuffix }
-                                attrBottom={ 'marginBottom' + deviceSuffix }
-                                attrLeft={ 'marginLeft' + deviceSuffix }
-                                labelTop={ __( 'Left', 'wcb' ) }
-                                labelRight={ __( 'Right', 'wcbs' ) }
-                                labelBottom={ __( 'Bottom', 'wcb' ) }
-                                labelLeft={ __( 'Left', 'wcb' ) }
-                            />
+                        label={ __( 'Width', 'wcb' ) }
+                        responsive={ [ 'desktop', 'tablet', 'mobile' ] }
+                        units={ [ '%' ] }
+                        selectedUnit={
+                            attributes[ 'width' + deviceSuffix ]
+                        }
+                    >
+                        <NumberControl
+                            value={ colWidth || attributes.width }
+                            onChange={ ( value ) => {
+                                setColWidth( value )
+                                setAttributes({width: value})
+                            }}
+                            min={ 5 }
+                            max={ 95 }
+                        />
+                    </WoostifyBaseControl>
+                    <WoostifyBaseControl
+                        label={ __( 'Spacing', 'wcb' ) }
+                        responsive={ [ 'desktop', 'tablet', 'mobile' ] }
+                        units={ [ 'px', 'em', 'rem' ] }
+                        selectedUnit={
+                            attributes[ 'marginUnit' + deviceSuffix ]
+                        }
+                        onUnitClick={ ( unit ) =>
+                            setAttributes( {
+                                [ 'marginUnit' + deviceSuffix ]: unit,
+                            } )
+                        }
+                    >
+                        <WoostifyDimensionsControl
+                            { ...props }
+                            type={ 'margin' }
+                            attrTop={ 'marginTop' + deviceSuffix }
+                            attrRight={ 'marginRight' + deviceSuffix }
+                            attrBottom={ 'marginBottom' + deviceSuffix }
+                            attrLeft={ 'marginLeft' + deviceSuffix }
+                            labelTop={ __( 'Top', 'wcb' ) }
+                            labelRight={ __( 'Right', 'wcbs' ) }
+                            labelBottom={ __( 'Bottom', 'wcb' ) }
+                            labelLeft={ __( 'Left', 'wcb' ) }
+                        />
 					</WoostifyBaseControl>
                 </PanelBody>
             </InspectorControls>
