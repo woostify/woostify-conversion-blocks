@@ -9,7 +9,8 @@
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",
     "start": "wp-scripts start src/blocks.js src/sidebar.js --output-path=dist",
-    "packages-update": "wp-scripts packages-update"
+    "packages-update": "wp-scripts packages-update",
+    "make-pot": "wp i18n make-pot . languages/wcb.pot"
   },
   "author": "Woostify",
   "license": "GPL-2.0-or-later",
