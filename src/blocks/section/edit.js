@@ -106,7 +106,7 @@ function Edit( props ) {
 			}
         }
 
-        const blockWidth = Number.parseFloat( 100 / numColumns ).toFixed(1);
+        const blockWidth = Number.parseFloat( 100 / numColumns ).toFixed(2);
         const newInnerBlocks = getBlocksByClientId( clientId )[0]?.innerBlocks;
         newInnerBlocks.forEach(function(child, index){
             dispatch('core/block-editor').updateBlockAttributes(child.clientId, {width: blockWidth})

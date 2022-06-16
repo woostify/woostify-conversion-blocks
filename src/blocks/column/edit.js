@@ -7,7 +7,7 @@ import {
 	ColorPalette,
 	InspectorControls,
 } from '@wordpress/block-editor';
-import { select } from '@wordpress/data';
+import { select, dispatch } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { PanelBody, RangeControl, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 
@@ -15,16 +15,17 @@ import WoostifyBaseControl from '../../components/controls/base';
 import WoostifyDimensionsControl from '../../components/controls/dimensions';
 
 import { getDeviceSuffix } from '../../utils/get-device-type';
-import { getAllUniqueIds } from '../../utils/index';
+import { convertToResponsiveStyle, getAllUniqueIds } from '../../utils/index';
 
 function Edit( props ) {
+    const minColWidth = 5;
     const blockProps = useBlockProps();
     const deviceSuffix = getDeviceSuffix();
     const { attributes, setAttributes, clientId } = props;
     
     const [ colWidth, setColWidth ] = useState( attributes.width || false );
 
-    const { getBlockOrder } = select('core/block-editor');
+    const { getBlockOrder, getBlocksByClientId, getBlockHierarchyRootClientId } = select('core/block-editor');
 
     const hasChildBlocks = getBlockOrder( clientId ).length > 0;
 
@@ -37,6 +38,50 @@ function Edit( props ) {
 			setAttributes( { uniqueId: clientId.substr( 2, 9 ).replace( '-', '' ) } );
 		}
     }, [] )
+
+    useEffect( () => {
+
+        if ( ! colWidth ) return;
+        const parentBlockClientId = getBlockHierarchyRootClientId( clientId );
+        const childBlocks = getBlocksByClientId(parentBlockClientId)[0]?.innerBlocks;
+        let childBlocksLength = childBlocks.length;
+
+        if ( childBlocksLength < 2 ) {
+            return;
+        }
+
+        let currBlockPlusWidth,
+        needUpdateBlockIndex,
+        lastBlockIndex = childBlocksLength - 1,
+        valueDiff = Number( colWidth ) - Number( attributes.width);
+
+        childBlocks.forEach(function(child, index){
+            if ( clientId === child.clientId) {
+                if ( lastBlockIndex === index ) {
+                    needUpdateBlockIndex = lastBlockIndex - 1;
+                } else {
+                    needUpdateBlockIndex = index + 1;
+                }
+            }
+        });
+
+        let available_width_for_update = Number( childBlocks[needUpdateBlockIndex]?.attributes.width ) - minColWidth;
+        if ( valueDiff > available_width_for_update ) {
+            valueDiff = available_width_for_update;
+        }
+
+        let needUpdateBlockWidth = Number( childBlocks[needUpdateBlockIndex]?.attributes.width ) - valueDiff;
+
+        dispatch('core/block-editor').updateBlockAttributes(childBlocks[needUpdateBlockIndex]?.clientId, {width: needUpdateBlockWidth})
+        
+        let finalValue = Number( attributes.width ) + valueDiff;
+
+        setAttributes({width: finalValue})
+    }, [colWidth] )
+
+    const onChangeColumnWidth = ( value, extra ) => {
+        setColWidth( value )
+    } 
 
     const classnames = 'wcb-column wcb-column-wrapper';
 
@@ -59,16 +104,12 @@ function Edit( props ) {
                         label={ __( 'Width', 'wcb' ) }
                         responsive={ [ 'desktop', 'tablet', 'mobile' ] }
                         units={ [ '%' ] }
-                        selectedUnit={
-                            attributes[ 'width' + deviceSuffix ]
-                        }
+                        selectedUnit={'%'}
                     >
                         <NumberControl
                             value={ colWidth || attributes.width }
-                            onChange={ ( value ) => {
-                                setColWidth( value )
-                                setAttributes({width: value})
-                            }}
+                            isShiftStepEnabled={true}
+                            onChange={ ( newValue, extra ) => onChangeColumnWidth(newValue, extra) }
                             min={ 5 }
                             max={ 95 }
                         />
