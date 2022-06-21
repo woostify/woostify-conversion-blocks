@@ -8,7 +8,7 @@ import {
 	InspectorControls,
 } from '@wordpress/block-editor';
 import { select, dispatch } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { PanelBody, RangeControl, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 
 import WoostifyBaseControl from '../../components/controls/base';
@@ -19,13 +19,12 @@ import { convertToResponsiveStyle, getAllUniqueIds } from '../../utils/index';
 
 function Edit( props ) {
     const minColWidth = 5;
-    const blockProps = useBlockProps();
     const deviceSuffix = getDeviceSuffix();
-    const { attributes, setAttributes, clientId } = props;
+    const { attributes, setAttributes, clientId, isSelected } = props;
     
-    const [ colWidth, setColWidth ] = useState( attributes.width || false );
+    const [ colWidth, setColWidth ] = useState( attributes.width );
 
-    const { getBlockOrder, getBlocksByClientId, getBlockHierarchyRootClientId } = select('core/block-editor');
+    const { getBlockOrder } = select('core/block-editor');
 
     const hasChildBlocks = getBlockOrder( clientId ).length > 0;
 
@@ -39,10 +38,15 @@ function Edit( props ) {
 		}
     }, [] )
 
-    useEffect( () => {
+    if ( isSelected ) {
+        if ( attributes.width !== colWidth ) {
+            setColWidth( attributes.width );
+        }
+    }
 
-        if ( ! colWidth ) return;
-        const parentBlockClientId = getBlockHierarchyRootClientId( clientId );
+    const onSetColumnWidth = useCallback( value => {
+        const { getBlocksByClientId, getBlockRootClientId } = select('core/block-editor');
+        const parentBlockClientId = getBlockRootClientId( clientId );
         const childBlocks = getBlocksByClientId(parentBlockClientId)[0]?.innerBlocks;
         let childBlocksLength = childBlocks.length;
 
@@ -50,10 +54,11 @@ function Edit( props ) {
             return;
         }
 
-        let currBlockPlusWidth,
-        needUpdateBlockIndex,
+        let needUpdateBlockIndex,
+        needUpdateWidth,
+        newCurrentBlockValue = parseFloat( value ),
         lastBlockIndex = childBlocksLength - 1,
-        valueDiff = Number( colWidth ) - Number( attributes.width);
+        valueDiff = parseFloat( value ) - parseFloat( attributes.width );
 
         childBlocks.forEach(function(child, index){
             if ( clientId === child.clientId) {
@@ -65,24 +70,19 @@ function Edit( props ) {
             }
         });
 
-        let available_width_for_update = Number( childBlocks[needUpdateBlockIndex]?.attributes.width ) - minColWidth;
-        if ( valueDiff > available_width_for_update ) {
-            valueDiff = available_width_for_update;
+        let availableWidthForUpdate = parseFloat( childBlocks[needUpdateBlockIndex]?.attributes.width ) - minColWidth - valueDiff;
+        if ( availableWidthForUpdate >= 0 ) {
+            needUpdateWidth = minColWidth + availableWidthForUpdate;
+        } else {
+            needUpdateWidth = minColWidth;
+            newCurrentBlockValue = parseFloat( value ) + availableWidthForUpdate;
         }
-
-        let needUpdateBlockWidth = Number( childBlocks[needUpdateBlockIndex]?.attributes.width ) - valueDiff;
-
-        dispatch('core/block-editor').updateBlockAttributes(childBlocks[needUpdateBlockIndex]?.clientId, {width: needUpdateBlockWidth})
         
-        let finalValue = Number( attributes.width ) + valueDiff;
-
-        setAttributes({width: finalValue})
-    }, [colWidth] )
-
-    const onChangeColumnWidth = ( value, extra ) => {
-        setColWidth( value )
-    } 
-
+        dispatch('core/block-editor').updateBlockAttributes(childBlocks[needUpdateBlockIndex]?.clientId, {width: needUpdateWidth.toString() })
+        setColWidth( newCurrentBlockValue );
+        setAttributes({ width: newCurrentBlockValue.toString() })
+    })
+    
     const classnames = 'wcb-column wcb-column-wrapper';
 
     const marginCSS = {
@@ -109,7 +109,7 @@ function Edit( props ) {
                         <NumberControl
                             value={ colWidth || attributes.width }
                             isShiftStepEnabled={true}
-                            onChange={ ( newValue, extra ) => onChangeColumnWidth(newValue, extra) }
+                            onChange={ ( value ) => onSetColumnWidth( value ) }
                             min={ 5 }
                             max={ 95 }
                         />
@@ -159,12 +159,11 @@ function Edit( props ) {
             </style>
             <InnerBlocks 
                 templateLock={ false }
-                template={ [] }
-                renderAppender={ (
+                renderAppender={ ((
                     hasChildBlocks ?
                         undefined :
                         () => <InnerBlocks.ButtonBlockAppender />
-                ) }
+                )) }
             />
         </div>
     )

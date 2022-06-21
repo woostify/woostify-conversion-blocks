@@ -5,15 +5,12 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
     InnerBlocks,
-	ColorPalette,
 	InspectorControls,
 } from '@wordpress/block-editor';
 import {
     PanelBody,
     RangeControl,
     Placeholder,
-    TextControl,
-    Button
 } from '@wordpress/components';
 import { select, dispatch } from '@wordpress/data';
 import { Fragment, useState, useEffect, useCallback } from '@wordpress/element';
@@ -106,7 +103,7 @@ function Edit( props ) {
 			}
         }
 
-        const blockWidth = Number.parseFloat( 100 / numColumns ).toFixed(2);
+        const blockWidth = parseFloat( ( 100 / numColumns ).toFixed(2) );
         const newInnerBlocks = getBlocksByClientId( clientId )[0]?.innerBlocks;
         newInnerBlocks.forEach(function(child, index){
             dispatch('core/block-editor').updateBlockAttributes(child.clientId, {width: blockWidth})
