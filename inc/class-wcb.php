@@ -194,7 +194,7 @@ if ( ! class_exists( 'WCB' ) ) {
 				$block_style     .= '#wcb-' . $block_id . ' {';
 					$block_style .= 'width: ' . $block_attrs['width'] . '%;';
 				$block_style     .= '}';
-				$block_style     .= '#wcb-' . $block_id . ' .wcb-column-wrapper {';
+				$block_style     .= '#wcb-' . $block_id . ' > .wcb-column-wrapper {';
 					if ( isset( $block_attrs['marginTop'] ) ) {
 						$block_style .= 'margin-top: ' . $block_attrs['marginTop'] . $margin_unit . ';';
 					}
@@ -356,15 +356,11 @@ if ( ! class_exists( 'WCB' ) ) {
 			$blocks = array(
 				array(
 					'slug'  => 'section',
-					'title' => __( 'Section', 'wcb' ),
+					'title' => __( 'WCB Columns', 'wcb' ),
 				),
 				array(
 					'slug'  => 'column',
-					'title' => __( 'Column', 'wcb' ),
-				),
-				array(
-					'slug'  => 'first-block',
-					'title' => __( 'First block', 'wcb' ),
+					'title' => __( 'WCB Column', 'wcb' ),
 				),
 			);
 

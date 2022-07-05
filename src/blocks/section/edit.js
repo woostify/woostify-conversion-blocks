@@ -6,16 +6,22 @@ import {
 	useBlockProps,
     InnerBlocks,
 	InspectorControls,
+    BlockControls,
+    BlockVerticalAlignmentToolbar
 } from '@wordpress/block-editor';
 import {
     PanelBody,
     RangeControl,
     Placeholder,
+    ToolbarButton
 } from '@wordpress/components';
 import { select, dispatch } from '@wordpress/data';
 import { Fragment, useState, useEffect, useCallback } from '@wordpress/element';
 import { times } from 'lodash';
 import { getBlockFromExample } from '@wordpress/blocks';
+import {
+    plus
+} from '@wordpress/icons';
 
 import { getDeviceSuffix } from '../../utils/get-device-type';
 import { getAllUniqueIds } from '../../utils/index';
@@ -163,6 +169,13 @@ function Edit( props ) {
 
     return (
         <Fragment { ...blockProps }>
+            <BlockControls group="block">
+                <ToolbarButton 
+                icon={ plus } 
+                label={__('Add Column', 'wcb')}
+                onClick={ () => onSetColumns(columns + 1) }
+                />
+            </BlockControls>
             <InspectorControls>
 				<PanelBody title={ __( 'General Settings', 'wcb' ) }>
                     <RangeControl

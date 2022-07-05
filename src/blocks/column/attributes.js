@@ -1,7 +1,16 @@
+import { HorizontalRule } from "@wordpress/components";
+
 export default {
 	uniqueId: {
 		type: 'string',
 		default: '',
+	},
+	direction: {
+		type: 'string',
+		default: 'horizontal',
+	},
+	verticalAlignment: {
+		type: 'string',
 	},
 	width: {
 		type: 'string',

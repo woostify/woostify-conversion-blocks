@@ -8,14 +8,35 @@ import {
 	InspectorControls,
 } from '@wordpress/block-editor';
 import { select, dispatch } from '@wordpress/data';
-import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
-import { PanelBody, RangeControl, __experimentalNumberControl as NumberControl } from '@wordpress/components';
+import { 
+    useEffect, 
+    useState, 
+    useCallback 
+} from '@wordpress/element';
+import { 
+    BlockControls,
+    BlockVerticalAlignmentToolbar
+} from '@wordpress/block-editor';
+import { 
+    PanelBody, 
+    __experimentalNumberControl as NumberControl,
+    ToolbarDropdownMenu,
+    ToolbarButton
+} from '@wordpress/components';
+import {
+    more,
+    arrowLeft,
+    arrowRight,
+    arrowUp,
+    arrowDown,
+    plus
+} from '@wordpress/icons';
 
 import WoostifyBaseControl from '../../components/controls/base';
 import WoostifyDimensionsControl from '../../components/controls/dimensions';
-
 import { getDeviceSuffix } from '../../utils/get-device-type';
 import { convertToResponsiveStyle, getAllUniqueIds } from '../../utils/index';
+import useBlockContext from '../../hooks/use-block-context';
 
 function Edit( props ) {
     const minColWidth = 5;
@@ -24,9 +45,7 @@ function Edit( props ) {
     
     const [ colWidth, setColWidth ] = useState( attributes.width );
 
-    const { getBlockOrder } = select('core/block-editor');
-
-    const hasChildBlocks = getBlockOrder( clientId ).length > 0;
+    const { parentBlock, hasChildBlocks } = useBlockContext();
 
     useEffect( () => {
         // Generate a unique ID if none exists or if the same ID exists on this page.
@@ -45,11 +64,8 @@ function Edit( props ) {
     }
 
     const onSetColumnWidth = useCallback( value => {
-        const { getBlocksByClientId, getBlockRootClientId } = select('core/block-editor');
-        const parentBlockClientId = getBlockRootClientId( clientId );
-        const childBlocks = getBlocksByClientId(parentBlockClientId)[0]?.innerBlocks;
-        let childBlocksLength = childBlocks.length;
-
+        const childBlocks = parentBlock?.innerBlocks;
+        const childBlocksLength = childBlocks.length;
         if ( childBlocksLength < 2 ) {
             return;
         }
@@ -98,6 +114,28 @@ function Edit( props ) {
         id={`wcb-column-${clientId}`}
         className={classnames}
         >
+        <BlockControls group="block">
+            <ToolbarDropdownMenu
+                icon={ more }
+                label={__('Direction', 'wcb')}
+                controls={ [
+                    {
+                        title: __('Horizontal', 'wcb'),
+                        icon: arrowRight,
+                        onClick: () => console.log( 'Horizontal' ),
+                    },
+                    {
+                        title: __('Vertical', 'wcb'),
+                        icon: arrowDown,
+                        onClick: () => console.log( 'Vertical' ),
+                    }
+                ] }
+            />
+            <BlockVerticalAlignmentToolbar
+                onChange={ (val) => console.log( val ) }
+                value={ attributes.verticalAlignment }
+            />
+        </BlockControls>
             <InspectorControls>
                 <PanelBody title={ __( 'General Settings', 'wcb' ) }>
                     <WoostifyBaseControl
