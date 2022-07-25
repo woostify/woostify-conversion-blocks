@@ -15,10 +15,6 @@
   "author": "Woostify",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "classnames": "^2.3.1",
-    "color-rgba": "^2.4.0"
-  },
-  "devDependencies": {
     "@wordpress/api-fetch": "^6.3.0",
     "@wordpress/block-editor": "^6.0.0",
     "@wordpress/blocks": "^9.0.0",
@@ -28,6 +24,10 @@
     "@wordpress/element": "^3.0.0",
     "@wordpress/hooks": "^3.0.0",
     "@wordpress/i18n": "^4.0.0",
+    "classnames": "^2.3.1",
+    "color-rgba": "^2.4.0"
+  },
+  "devDependencies": {
     "@wordpress/scripts": "^22.4.0",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
