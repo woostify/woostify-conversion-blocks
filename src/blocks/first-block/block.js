@@ -5,6 +5,8 @@ import Edit from './edit';
 import save from './save';
 
 registerBlockType( 'wcb/first-block', {
+  title: 'First Block',
+
 	attributes: blockAttributes,
 	/**
 	 * @see ./edit.js

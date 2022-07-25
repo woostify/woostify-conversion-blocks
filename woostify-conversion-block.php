@@ -4,7 +4,7 @@
  * Description:       Advanced blocks for Gutenberg editor.
  * Requires at least: 5.8
  * Requires PHP:      7.0
- * Version:           0.1.0
+ * Version:           0.1.0-dev
  * Author:            Woostify
  * License:           GNU General Public License v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define Constants.
-define( 'WCB_VERSION', '0.1.0' );
+define( 'WCB_VERSION', '0.1.0-dev' );
 define( 'WCB_FILE', __FILE__ );
 define( 'WCB_PLUGIN_BASE', plugin_basename( WCB_FILE ) );
 define( 'WCB_PATH', plugin_dir_path( WCB_FILE ) );

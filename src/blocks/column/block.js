@@ -6,6 +6,7 @@ import Edit from './edit';
 import save from './save';
 
 registerBlockType( 'wcb/column', {
+  title: 'Column',
 	icon,
 	attributes: blockAttributes,
 	parent: [ 'wcb/section' ],
@@ -14,7 +15,7 @@ registerBlockType( 'wcb/column', {
 		reusable: false,
 		html: false,
 	},
-	
+
 	/**
 	 * @see ./edit.js
 	 */
