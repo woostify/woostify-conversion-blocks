@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  www:
+    depends_on:
+      - mysql
+    image: wordpress:latest
+    restart: on-failure
+    environment:
+      WP_URL: http://localhost:8080
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DEBUG: 1
+    ports:
+      - '8080:80'
+    volumes:
+      - wordpress:/var/www/html
+      - '.:/var/www/html/wp-content/plugins/woostify-conversion-blocks'
+      - './tests/ultimate-addons-for-gutenberg:/var/www/html/wp-content/plugins/ultimate-addons-for-gutenberg'
+    networks:
+      - wp_network
+
+  mysql:
+    image: mysql:5.7
+    restart: on-failure
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - "33061:3306"
+    networks:
+      - wp_network
+
+networks:
+  wp_network:
+    driver: bridge
+
+volumes:
+  wordpress:
+  db:
